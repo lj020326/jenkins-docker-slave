@@ -30,6 +30,6 @@ RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
     chown -R jenkins:jenkins /home/jenkins/.ssh/
 
 # Standard SSH port
-EXPOSE 22
+EXPOSE 8022
 
 CMD ["/usr/sbin/sshd", "-D"]
