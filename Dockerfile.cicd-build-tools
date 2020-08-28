@@ -228,8 +228,10 @@ RUN apt-get update -qqy \
 
 #====================================
 # ANSIBLE
+# ref: https://medium.com/@prashant.vats/jenkins-master-and-slave-with-docker-b993dd031cbd
 #====================================
 RUN pip3 install -U ansible
+RUN mkdir -p /home/jenkins/.ansible
 
 
 USER jenkins
