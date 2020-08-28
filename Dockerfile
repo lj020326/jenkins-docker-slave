@@ -26,8 +26,8 @@ ARG user=jenkins
 
 RUN chmod +x /usr/local/bin/jenkins-agent &&\
     ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
-RUN chmod 644 /usr/share/jenkins/agent.jar \
-      && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+RUN chmod 644 /usr/share/jenkins/agent.jar &&\
+    ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
 
 USER ${user}
 
