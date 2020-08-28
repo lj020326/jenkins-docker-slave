@@ -5,7 +5,8 @@
 ##
 FROM jenkins/inbound-agent as builder
 
-FROM media.dettonville.int:5000/cicd-build-tools
+#FROM media.dettonville.int:5000/cicd-build-tools
+FROM media.johnson.local:5000/cicd-build-tools
 LABEL maintainer="Lee Johnson <ljohnson@dettonville.org>"
 
 #################################################
