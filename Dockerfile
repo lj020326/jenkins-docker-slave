@@ -1,35 +1,34 @@
-FROM ubuntu:18.04
 
-LABEL maintainer="Bibin Wilson <bibinwilsonn@gmail.com>"
+## refs:
+##   https://github.com/cloudbees/jnlp-slave-with-java-build-tools-dockerfile/blob/master/Dockerfile
+##   https://github.com/cloudbees/java-build-tools-dockerfile/blob/master/Dockerfile
+##
+FROM jenkins/inbound-agent as builder
 
-# Make sure the package repository is up to date.
-RUN apt-get update && \
-    apt-get -qy full-upgrade && \
-    apt-get install -qy git && \
-# Install a basic SSH server
-    apt-get install -qy openssh-server && \
-    sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd && \
-    mkdir -p /var/run/sshd && \
-# Install JDK 8 (latest stable edition at 2019-04-01)
-    apt-get install -qy openjdk-8-jdk && \
-# Install maven
-    apt-get install -qy maven && \
-# Cleanup old packages
-    apt-get -qy autoremove && \
-# Add user jenkins to the image
-    adduser --quiet jenkins && \
-# Set password for the jenkins user (you may want to alter this).
-    echo "jenkins:qqnm3LXD" | chpasswd && \
-    mkdir /home/jenkins/.m2
+FROM media.dettonville.int:5000/cicd-build-tools
+LABEL maintainer="Lee Johnson <ljohnson@dettonville.org>"
 
-#ADD settings.xml /home/jenkins/.m2/
-# Copy authorized keys
-COPY .ssh/authorized_keys /home/jenkins/.ssh/authorized_keys
+#################################################
+# Inspired by
+# https://github.com/cloudbees/jnlp-slave-with-java-build-tools-dockerfile
+# https://github.com/cloudbees/java-build-tools-dockerfile/blob/master/Dockerfile
+# https://github.com/SeleniumHQ/docker-selenium/blob/master/Base/Dockerfile
+# https://github.com/bibinwilson/jenkins-docker-slave
+# https://medium.com/@prashant.vats/jenkins-master-and-slave-with-docker-b993dd031cbd
+#################################################
 
-RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
-    chown -R jenkins:jenkins /home/jenkins/.ssh/
+COPY --from=builder /usr/local/bin/jenkins-slave /usr/local/bin/jenkins-agent
+COPY --from=builder /usr/share/jenkins/agent.jar /usr/share/jenkins/agent.jar
 
-# Standard SSH port
-EXPOSE 22
+USER root
 
-CMD ["/usr/sbin/sshd", "-D"]
+ARG user=jenkins
+
+RUN chmod +x /usr/local/bin/jenkins-agent &&\
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+RUN chmod 644 /usr/share/jenkins/agent.jar \
+      && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+
+USER ${user}
+
+ENTRYPOINT ["jenkins-agent"]
