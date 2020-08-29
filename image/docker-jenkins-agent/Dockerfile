@@ -37,7 +37,7 @@ RUN chmod 644 /usr/share/jenkins/agent.jar &&\
 COPY entry_point.sh /entry_point.sh
 RUN chmod +x /entry_point.sh
 
-USER ${user}
+#USER ${user}
 
 #ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
 ENTRYPOINT ["/entry_point.sh"]

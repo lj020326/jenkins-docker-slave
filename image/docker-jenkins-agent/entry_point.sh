@@ -36,4 +36,5 @@ if [ "${JENKINS_UIDGID_CHANGED,,}" == "true" ]; then
   chown -R jenkins:jenkins /home/jenkins
 fi
 
-exec /usr/local/bin/jenkins-agent "$@"
+#exec /usr/local/bin/jenkins-agent "$@"
+exec sudo -u jenkins /usr/local/bin/jenkins-agent "$@"
