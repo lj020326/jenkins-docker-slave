@@ -40,4 +40,4 @@ RUN chmod +x /entry_point.sh
 USER ${user}
 
 #ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entry_point.sh"]
