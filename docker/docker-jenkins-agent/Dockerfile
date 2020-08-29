@@ -34,6 +34,10 @@ RUN chmod +x /usr/local/bin/jenkins-agent &&\
 RUN chmod 644 /usr/share/jenkins/agent.jar &&\
     ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
 
+COPY entry_point.sh /entry_point.sh
+RUN chmod +x /entry_point.sh
+
 USER ${user}
 
-ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
+#ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
+ENTRYPOINT ["/entrypoint.sh"]
