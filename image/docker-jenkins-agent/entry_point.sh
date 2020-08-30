@@ -13,12 +13,12 @@ CUR_USER_UID=$(id -u jenkins || true)
 JENKINS_UIDGID_CHANGED=false
 if [ "$uid" != "$CUR_USER_UID" ]; then
   echo "CUR_USER_UID (${CUR_USER_UID}) does't match uid (${uid}), adjusting..."
-  sudo usermod -o -u "$uid" jenkins
+  usermod -o -u "$uid" jenkins
   JENKINS_UIDGID_CHANGED=true
 fi
 if [ "$gid" != "$CUR_USER_GID" ]; then
   echo "CUR_USER_GID (${CUR_USER_GID}) does't match gid (${gid}), adjusting..."
-  sudo groupmod -o -g "$gid" jenkins
+  groupmod -o -g "$gid" jenkins
   JENKINS_UIDGID_CHANGED=true
 fi
 
@@ -33,8 +33,8 @@ echo "-------------------------------------"
 # fix file permissions
 if [ "${JENKINS_UIDGID_CHANGED,,}" == "true" ]; then
   echo "updating file uid/gid ownership"
-  sudo chown -R jenkins:jenkins /home/jenkins
+  chown -R jenkins:jenkins /home/jenkins
 fi
 
 #exec /usr/local/bin/jenkins-agent "$@"
-exec sudo -u jenkins /usr/local/bin/jenkins-agent "$@"
+exec su -c "/usr/local/bin/jenkins-agent ${@}" jenkins
